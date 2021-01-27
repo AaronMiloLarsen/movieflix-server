@@ -13,9 +13,11 @@ const Comment = require('../db').import('../models/comment');
 router.post('/create', validateSession, (req, res) => {
     const newComment = {
         comment: req.body.comment,
-        author: req.body.author
+        author: req.body.author,
+        userId: req.user.id,
+        reviewId: req.body.reviewId
     }
-    Movie.create(newComment)
+    Comment.create(newComment)
         .then((comment) => res.status(200).json(comment))
         .catch((err) => res.status(500).json({ error: err }))
 });

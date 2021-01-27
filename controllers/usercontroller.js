@@ -4,19 +4,22 @@ const jwt= require('jsonwebtoken');
 const bcrypt= require('bcryptjs');
 const validateSession = require('../middleware/validate-session');
 const validateAdmin = require('../middleware/validate-admin');
+// const review = require('../models');
+// const comment = require('../models');
+// const movie = require('../models')
 
 
 // ----------- //
 // USER SIGNUP //
 // ----------- //
 
-router.post('/signup', (req, res) =>{
+router.post('/signup', (req, res) => {
     User.create({
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        email: req.body.email,
-        password: bcrypt.hashSync(req.body.password, 12),
-        admin: req.body.admin
+        firstName: req.body.user.firstName,
+        lastName: req.body.user.lastName,
+        email: req.body.user.email,
+        password: bcrypt.hashSync(req.body.user.password, 12),
+        admin: req.body.user.admin
         
     })
     .then(user =>{
@@ -35,7 +38,7 @@ router.post('/signup', (req, res) =>{
 // USER LOGIN //
 // -----------//
 
-router.post('/login', function (req, res) {
+router.post('/login', (req, res) => {
 
     User.findOne({
         where: {
@@ -82,5 +85,18 @@ router.delete('/delete/:id', validateSession, validateAdmin, async (req, res) =>
         res.status(500).json({error: err })
     }
 });
+
+// ----------//
+// ALL USERS //
+// ----------//
+
+router.get('/all', validateSession, (req, res) => {
+    User.findAll({ include: ['movie', 'review', 'comment']})
+    // User.findAll()
+        .then(user => res.status(200).json(user))
+        .catch(err => res.status(500).json ({ error: err }))
+});
+
+
 
 module.exports = router;

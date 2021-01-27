@@ -16,19 +16,20 @@ Comments = database.import('./models/comment');
 Movie = database.import('./models/movie');
 Review = database.import('./models/review')
 
-Comments.belongsTo(User);
-User.hasMany(Comments);
+Movie.belongsTo(User);
+User.hasMany(Movie, {as: 'movie'})
 
 Review.belongsTo(User);
-User.hasMany(Review)
+User.hasMany(Review, {as: 'review'})
+
+Comments.belongsTo(User);
+User.hasMany(Comments, {as: 'comments'});
 
 Review.belongsTo(Movie);
-Movie.hasMany(Review);
+Movie.hasMany(Review, {as: 'review'});
 
 Comments.belongsTo(Review);
 Review.hasMany(Comments);
-
-
 
 
 module.exports = database;

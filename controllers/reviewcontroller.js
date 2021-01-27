@@ -7,13 +7,15 @@ const Review = require('../db').import('../models/review')
 // ---------- //
 
 
-router.post('/create', validateSession, (req, res) => {
+router.post('/create/:movieId', validateSession, (req, res) => {
     const newReview = {
         title: req.body.review.title,
         // movie: req.body.review.movie, //may end up making this req.movie.id to attach to movie db
         emotion: req.body.review.emotion,
         review: req.body.review.review,
-        author: req.user.id,
+        author: req.body.review.author,
+        userId: req.user.id,
+        movieId: req.params.movieId
     }
     Review.create(newReview)
         .then((review) => res.status(200).json(review))
@@ -28,7 +30,7 @@ router.post('/create', validateSession, (req, res) => {
 
 router.get('/myreviews', validateSession, (req, res) => {
     Review.findAll({
-        where: { author: req.body.review.author }
+        where: { userId: req.user.id }
     })
         .then(review => res.status(200).json(review))
         .catch(err => res.status(500).json ({ error: err }))

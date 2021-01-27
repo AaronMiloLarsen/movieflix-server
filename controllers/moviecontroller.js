@@ -14,7 +14,8 @@ router.post('/create', validateSession, (req, res) => {
 		title: req.body.movie.title,
 		year: req.body.movie.year,
 		duration: req.body.movie.duration,
-		description: req.body.movie.description
+        description: req.body.movie.description,
+        userId: req.user.id
     }
     Movie.create(newMovie)
         .then((movie) => res.status(200).json(movie))
@@ -28,7 +29,7 @@ router.post('/create', validateSession, (req, res) => {
 
 
 router.get('/', validateSession, (req, res) => {
-    Movie.findAll()
+    Movie.findAll({include: "review"})
         .then(movie => res.status(200).json(movie))
         .catch(err => res.status(500).json ({ error: err }))
 });

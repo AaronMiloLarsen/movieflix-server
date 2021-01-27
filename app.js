@@ -5,7 +5,7 @@ const app = express();
 
 
 const sequelize = require('./db');
-sequelize.sync({force:true});
+sequelize.sync({});
 
 // ----------- //
 // CONTROLLERS //
