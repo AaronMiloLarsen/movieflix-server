@@ -12,10 +12,10 @@ const Comment = require('../db').import('../models/comment');
 
 router.post('/create', validateSession, (req, res) => {
     const newComment = {
-        comment: req.body.comment,
-        author: req.body.author,
+        comment: req.body.comment.comment,
+        author: req.body.comment.author,
         userId: req.user.id,
-        reviewId: req.body.reviewId
+        reviewId: req.body.comment.reviewId
     }
     Comment.create(newComment)
         .then((comment) => res.status(200).json(comment))
@@ -70,11 +70,13 @@ router.delete('/mycomments/:id', validateSession, async (req, res) => {
 });
 
 // -------------//
-// ALL COMMENTS //
+// ALL COMMENTS // (BY REVIEW)
 // ------------ //
 
-router.get('/allcomments', validateSession, (req, res) => {
-    Review.findAll()
+router.get('/allcomments/:reviewId', validateSession, (req, res) => {
+    Review.findAll({
+        where: { reviewId: req.params.reviewId}
+    })
         .then(review => res.status(200).json(review))
         .catch(err => res.status(500).json ({ error: err }))
 });

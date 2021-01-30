@@ -52,6 +52,19 @@ router.get('/search', validateSession, (req, res) => {
 });
 
 
+// ------------- //
+// GET MY MOVIES // (FOR PROFILE)
+// ------------- //
+
+router.get('/mymovies/:userId', validateSession, (req, res) => {
+    Movie.findAll({
+        where: {userId: req.params.id}
+    })
+        .then(movie => res.status(200).json(movie))
+        .catch(err => res.status(500).json ({ error: err }))
+});
+
+
 // ---------- //
 // EDIT MOVIE //
 // ---------- //
