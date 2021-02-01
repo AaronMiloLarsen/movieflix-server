@@ -29,7 +29,10 @@ Review.belongsTo(Movie);
 Movie.hasMany(Review, {as: 'review'});
 
 Comments.belongsTo(Review);
-Review.hasMany(Comments);
+Review.hasMany(Comments, {as: 'comments'});
+
+// Comments.belongsTo(Movie);
+// Movie.hasMany(Comments, {as: 'comments' })
 
 
 module.exports = database;

@@ -22,14 +22,15 @@ router.post('/create/', validateSession, (req, res) => {
 });
 
 
-// ---------------- //
-// GET YOUR REVIEWS // (BY USERID)
-// ---------------- //
+// ---------------//
+// GET MY REVIEWS // (FOR PROFILE)
+// ---------------//
 
 
-router.get('/myreviews', validateSession, (req, res) => {
+router.get('/myreviews/:userId', validateSession, (req, res) => {
     Review.findAll({
-        where: { userId: req.user.id }
+        include: 'comments',
+        where: {userId: req.params.userId}
     })
         .then(review => res.status(200).json(review))
         .catch(err => res.status(500).json ({ error: err }))
@@ -37,14 +38,13 @@ router.get('/myreviews', validateSession, (req, res) => {
 
 
 // ----------- //
-// EDIT REVIEW //
+// EDIT REVIEW // (BY ID)
 // ----------- //
 
 
-router.put('/myreviews/:id', validateSession, (req, res) => {
+router.put('/:id', validateSession, (req, res) => {
     const updateReview = {
         title: req.body.review.title,
-        // movie: req.body.review.movie, //may end up making this req.movie.id to attach to movie db
         emotion: req.body.review.emotion,
         review: req.body.review.review,
         author: req.body.review.author,
@@ -61,10 +61,11 @@ router.put('/myreviews/:id', validateSession, (req, res) => {
 // ------------- //
 
 
-router.delete('/myreviews/:id', validateSession, async (req, res) => {
+router.delete('/:id', validateSession, async (req, res) => {
 
     try {
-    const destroy = await Review.destroy({ where: { id: req.params.id }})
+    const destroy = await Review.destroy({
+         where: { id: req.params.id }})
        res.status(200).json(destroy)
 
     } catch (err) {
@@ -78,6 +79,7 @@ router.delete('/myreviews/:id', validateSession, async (req, res) => {
 
 router.get('/allreviews/:movieId', validateSession, (req, res) => {
     Review.findAll({
+        include: 'comments',
         where: { movieId: req.params.movieId}
     })
         .then(review => res.status(200).json(review))

@@ -23,17 +23,30 @@ router.post('/create', validateSession, (req, res) => {
 });
 
 
-// ----------------- //
-// GET YOUR COMMENTS //
-// ----------------- //
+// --------------- //
+// GET MY COMMENTS // (FOR PROFILE)
+// ----------------//
 
 
-router.get('/mycomments', validateSession, (req,res) => {
+router.get('/mycomments/:userId', validateSession, (req,res) => {
     Comment.findAll({
-        where: { author: req.body.author }
+        where: {userId: req.params.userId}
     })
         .then(review => res.status(200).json(review))
         .catch(err => res.status(500).json({error: err}))
+});
+
+
+// -------------------//
+// GET COMMENTS BY ID // 
+// ------------------ //
+
+router.get('/id', validateSession, (req, res) => {
+    Comment.findAll({
+        where: { where: { id: req.params.id }}
+    })
+        .then(review => res.status(200).json(review))
+        .catch(err => res.status(500).json ({ error: err }))
 });
 
 
@@ -42,13 +55,13 @@ router.get('/mycomments', validateSession, (req,res) => {
 // ------------ //
 
 
-router.put('/mycomments/:id', validateSession, (req, res) => {
+router.put('/:id', validateSession, (req, res) => {
     const updateComment = {
-        comment: req.body.comment,
-        author: req.body.author
+        comment: req.body.comment.comment,
+        author: req.body.comment.author
     }
     const query = { where: { id: req.params.id }}
-    Review.update(updateComment, query)
+    Comment.update(updateComment, query)
         .then((comment) => res.status(200).json(comment))
         .catch((err) => res.status(500).json({ error: err }))
 });
@@ -58,7 +71,7 @@ router.put('/mycomments/:id', validateSession, (req, res) => {
 // REMOVE COMMENT //
 // -------------- //
 
-router.delete('/mycomments/:id', validateSession, async (req, res) => {
+router.delete('/:id', validateSession, async (req, res) => {
 
     try {
     const destroy = await Comment.destroy({ where: { id: req.params.id }})
@@ -74,7 +87,7 @@ router.delete('/mycomments/:id', validateSession, async (req, res) => {
 // ------------ //
 
 router.get('/allcomments/:reviewId', validateSession, (req, res) => {
-    Review.findAll({
+    Comment.findAll({
         where: { reviewId: req.params.reviewId}
     })
         .then(review => res.status(200).json(review))

@@ -29,7 +29,23 @@ router.post('/create', validateSession, (req, res) => {
 
 
 router.get('/', validateSession, (req, res) => {
-    Movie.findAll({include: "review"})
+    Movie.findAll({
+        include: "review"
+    })
+        .then(movie => res.status(200).json(movie))
+        .catch(err => res.status(500).json ({ error: err }))
+});
+
+
+// --------------- //
+// GET MOVIE BY ID // (FOR PROFILE)
+// --------------- //
+
+router.get('/:id', validateSession, (req, res) => {
+    Movie.findAll({
+        include: 'review',
+        where: { id: req.params.id }
+    })
         .then(movie => res.status(200).json(movie))
         .catch(err => res.status(500).json ({ error: err }))
 });
@@ -58,15 +74,17 @@ router.get('/search', validateSession, (req, res) => {
 
 router.get('/mymovies/:userId', validateSession, (req, res) => {
     Movie.findAll({
-        where: {userId: req.params.id}
+        include: 'review',
+        where: {userId: req.params.userId}
     })
         .then(movie => res.status(200).json(movie))
         .catch(err => res.status(500).json ({ error: err }))
 });
 
 
+
 // ---------- //
-// EDIT MOVIE //
+// EDIT MOVIE // (BY ID)
 // ---------- //
 
 
@@ -82,6 +100,8 @@ router.put('/:id', validateSession, (req, res) => {
         .then((movie) => res.status(200).json(movie))
         .catch((err) => res.status(500).json({ error: err }))
 });
+
+//possibly add where: {movieId: req.params.movieId} maybe on mouse over setState movie Id
 
 
 // ------------ //
