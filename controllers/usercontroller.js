@@ -75,7 +75,7 @@ router.post('/login', (req, res) => {
 // USER DELETE (ADMIN) //
 // ------------------- //
 
-router.delete('/delete/:id', validateSession, validateAdmin, async (req, res) => {
+router.delete('/:id', validateSession, validateAdmin, async (req, res) => {
 
     try {
         const destroy = await User.destroy({ where: {id: req.params.id }})
@@ -86,12 +86,12 @@ router.delete('/delete/:id', validateSession, validateAdmin, async (req, res) =>
     }
 });
 
-// ----------//
-// ALL USERS //
-// ----------//
+// ------------------//
+// ALL USERS (ADMIN) //
+// ------------------//
 
-router.get('/all', validateSession, (req, res) => {
-    User.findAll({ include: ['movie', 'review', 'comment']})
+router.get('/all', validateSession, validateAdmin, (req, res) => {
+    User.findAll({ include: ['movie', 'review', 'comments']})
     // User.findAll()
         .then(user => res.status(200).json(user))
         .catch(err => res.status(500).json ({ error: err }))
