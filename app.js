@@ -7,6 +7,9 @@ const app = express();
 const sequelize = require('./db');
 sequelize.sync({});
 
+app.use(express.json());
+app.use(require('./middleware/headers'));
+
 // ----------- //
 // CONTROLLERS //
 // ----------- //
@@ -17,8 +20,7 @@ const movie = require('./controllers/moviecontroller')
 const comment = require('./controllers/commentcontroller')
 // app.use(express.static(__dirname + '/public'));
 
-app.use(express.json());
-app.use(require('./middleware/headers'));
+
 
 // ------ //
 // MODELS //
